@@ -14,19 +14,12 @@ public class FlightDetail implements Serializable {
     private Double pricePerInfant;
     private Double totalPriceOfAllPassengers;
 
-    public FlightDetail() {
-    }
-
     public FlightDetail(Flight flight) {
         this.flight = flight;
     }
 
     public Flight getFlight() {
         return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
     }
 
     public Double getPercentByDaysToDepartureDate() {

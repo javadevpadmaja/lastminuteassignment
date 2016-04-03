@@ -8,9 +8,6 @@ public class Flight implements Serializable {
     private String airline;
     private Double basePrice;
 
-    public Flight() {
-    }
-
     public Flight(String origin, String destination, String airline, Double basePrice) {
         this.origin = origin;
         this.destination = destination;

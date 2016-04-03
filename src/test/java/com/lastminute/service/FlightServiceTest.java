@@ -3,6 +3,7 @@ package com.lastminute.service;
 import com.lastminute.domain.FlightSearch;
 import com.lastminute.exceptions.InvalidDepartureDateException;
 import com.lastminute.exceptions.InvalidOriginAndDestinationException;
+import com.lastminute.exceptions.SameOriginAndDestinationException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,11 +76,27 @@ public class FlightServiceTest {
     }
 
     @Test(expected = InvalidOriginAndDestinationException.class)
-    public void shouldThrowExceptionGivenInvalidOriginAndDestination() throws Exception {
+    public void shouldThrowException_givenInvalidOrigin() throws Exception {
         FlightSearch flightSearch = new FlightSearch("CDG", "FRA", now().plusDays(30), 1,0,0);
         flightService.findFlights(flightSearch);
         thrown.expect(InvalidOriginAndDestinationException.class);
         thrown.expectMessage("no flights available");
+    }
+
+    @Test(expected = InvalidOriginAndDestinationException.class)
+    public void shouldThrowException_givenInvalidDestination() throws Exception {
+        FlightSearch flightSearch = new FlightSearch("FRA", "CDG", now().plusDays(30), 1,0,0);
+        flightService.findFlights(flightSearch);
+        thrown.expect(InvalidOriginAndDestinationException.class);
+        thrown.expectMessage("no flights available");
+    }
+
+    @Test(expected = SameOriginAndDestinationException.class)
+    public void shouldThrowException_givenSameOriginAndDestination() throws Exception {
+        FlightSearch flightSearch = new FlightSearch("FRA", "FRA", now().plusDays(30), 1,0,0);
+        flightService.findFlights(flightSearch);
+        thrown.expect(InvalidOriginAndDestinationException.class);
+        thrown.expectMessage("Origin and Destination are same");
     }
 
     @Test
@@ -124,7 +141,7 @@ public class FlightServiceTest {
     public void shouldThrowExceptionGivenInvalidDepartureDate() throws Exception {
         //given
         FlightSearch flightSearch = new FlightSearch("AMS", "FRA", now().minusDays(30), 1,0,0);
-        FlightSearch  flightSearchDetails =flightService.findFlights(flightSearch);
+        flightService.findFlights(flightSearch);
         thrown.expect(InvalidDepartureDateException.class);
         thrown.expectMessage("Departure date should not be past date");
     }

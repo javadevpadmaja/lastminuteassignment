@@ -1,16 +1,19 @@
 package com.lastminute.service;
 
 import com.lastminute.domain.Flight;
-import com.lastminute.domain.FlightSearch;
 import com.lastminute.domain.FlightDetail;
+import com.lastminute.domain.FlightSearch;
 import com.lastminute.exceptions.InvalidDepartureDateException;
 import com.lastminute.exceptions.InvalidOriginAndDestinationException;
+import com.lastminute.exceptions.SameOriginAndDestinationException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
-import static com.lastminute.service.PassengerType.*;
+import static com.lastminute.service.PassengerType.ADULT;
+import static com.lastminute.service.PassengerType.CHILD;
 import static com.lastminute.service.Util.loadFlights;
 import static com.lastminute.service.Util.round;
 import static java.util.Collections.unmodifiableMap;
@@ -30,16 +33,25 @@ public class FlightServiceImpl implements FlightService {
         return calculateFares(flightSearch);
     }
 
-    private List<Flight> getFlights(String origin, String destination) throws InvalidOriginAndDestinationException {
-        String key = origin.concat(destination);
-        if (flightsMap.containsKey(key)) {
-            return flightsMap.get(key);
+    private List<Flight> getFlights(String origin, String destination) {
+        checkIfOriginAndDestinationAreSame(origin, destination);
+        checkIfOriginAndDestinationAreValid(origin, destination);
+        return flightsMap.get(origin.concat(destination));
+    }
+
+    private void checkIfOriginAndDestinationAreSame(String origin, String destination) {
+        if (origin.equals(destination)) {
+            throw new SameOriginAndDestinationException("Origin and Destination are same");
         }
-        throw new InvalidOriginAndDestinationException("no flights available");
+    }
+
+    private void checkIfOriginAndDestinationAreValid(String origin, String destination) {
+        if (!flightsMap.containsKey(origin.concat(destination))) {
+            throw new InvalidOriginAndDestinationException("no flights available");
+        }
     }
 
     private FlightSearch calculateFares(FlightSearch flightSearch) {
-
         long daysFromDepartureDate = daysFromDepartureDate(flightSearch.getDepartureDate());
         flightSearch.getFlightDetails().stream()
                 .forEach(flightDetail -> {
@@ -57,7 +69,6 @@ public class FlightServiceImpl implements FlightService {
                 });
 
         return flightSearch;
-
     }
 
     private void calculateInfantFare(FlightDetail flightDetail) {
@@ -85,8 +96,7 @@ public class FlightServiceImpl implements FlightService {
 
     private Double calculateFare(Double basePrice, Double discountByPassengerType, double priceByDepartureDate) {
         Double fareByDepartureDate = (priceByDepartureDate * basePrice) / 100;
-        Double fare = (discountByPassengerType * fareByDepartureDate) / 100;
-        return fare;
+        return (discountByPassengerType * fareByDepartureDate) / 100;
     }
 
     private long daysFromDepartureDate(LocalDate departureDate) {
@@ -101,12 +111,16 @@ public class FlightServiceImpl implements FlightService {
     private double percentByDaysToDepartureDate(long daysToDepartureDate) {
         if (daysToDepartureDate < 3)
             return 150;
-        else if (daysToDepartureDate >= 3 && daysToDepartureDate <= 15)
+        else if (departureDateBetween(daysToDepartureDate, 3, 15))
             return 120;
-        else if (daysToDepartureDate >= 16 && daysToDepartureDate <= 30)
+        else if (departureDateBetween(daysToDepartureDate, 16, 30))
             return 100;
         else
             return 80;
+    }
+
+    private boolean departureDateBetween(long daysToDepartureDate, int start, int end) {
+        return daysToDepartureDate >= start && daysToDepartureDate <= end;
     }
 
     private double percentByPassengerType(PassengerType passengerType) {
