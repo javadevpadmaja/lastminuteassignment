@@ -16,7 +16,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class FlightServiceImpl implements FlightService {
-
     private FlightDataLoader flightDataLoader = FlightDataLoader.INSTANCE;
 
     @Override
@@ -27,8 +26,6 @@ public class FlightServiceImpl implements FlightService {
         flightSearch.setFlightDetails(flights.stream().map(FlightDetail::new).collect(toList()));
         return calculateFares(flightSearch);
     }
-
-
 
     private void checkIfOriginAndDestinationAreSame(String origin, String destination) {
         if (origin.equals(destination)) {

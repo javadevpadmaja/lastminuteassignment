@@ -51,7 +51,6 @@ public enum FlightDataLoader {
     }
 
     public List<Flight> getFlights(String origin, String destination) {
-
         return flightsMap.get(origin.concat(destination));
     }
 
