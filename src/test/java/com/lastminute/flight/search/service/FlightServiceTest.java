@@ -1,9 +1,9 @@
-package com.lastminute.service;
+package com.lastminute.flight.search.service;
 
-import com.lastminute.domain.FlightSearch;
-import com.lastminute.exceptions.InvalidDepartureDateException;
-import com.lastminute.exceptions.InvalidOriginAndDestinationException;
-import com.lastminute.exceptions.SameOriginAndDestinationException;
+import com.lastminute.flight.search.domain.FlightSearch;
+import com.lastminute.flight.search.exceptions.InvalidDepartureDateException;
+import com.lastminute.flight.search.exceptions.InvalidOriginAndDestinationException;
+import com.lastminute.flight.search.exceptions.SameOriginAndDestinationException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

@@ -1,11 +1,11 @@
-package com.lastminute.service;
+package com.lastminute.flight.search.service;
 
-import com.lastminute.domain.Flight;
-import com.lastminute.domain.FlightDetail;
-import com.lastminute.domain.FlightSearch;
-import com.lastminute.exceptions.InvalidDepartureDateException;
-import com.lastminute.exceptions.InvalidOriginAndDestinationException;
-import com.lastminute.exceptions.SameOriginAndDestinationException;
+import com.lastminute.flight.search.domain.Flight;
+import com.lastminute.flight.search.domain.FlightDetail;
+import com.lastminute.flight.search.domain.FlightSearch;
+import com.lastminute.flight.search.exceptions.InvalidDepartureDateException;
+import com.lastminute.flight.search.exceptions.InvalidOriginAndDestinationException;
+import com.lastminute.flight.search.exceptions.SameOriginAndDestinationException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,8 +13,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.lastminute.service.PassengerType.ADULT;
-import static com.lastminute.service.PassengerType.CHILD;
 import static java.util.stream.Collectors.toList;
 
 public class FlightServiceImpl implements FlightService {
@@ -51,9 +49,9 @@ public class FlightServiceImpl implements FlightService {
                     double percentByDaysToDepartureDate = percentByDaysToDepartureDate(daysFromDepartureDate);
                     flightDetail.setPercentByDaysToDepartureDate(percentByDaysToDepartureDate);
                     if (isExists(flightSearch.getNumberOfAdults()))
-                        calculateFarePerPassenger(flightDetail, percentByDaysToDepartureDate, ADULT);
+                        calculateFarePerPassenger(flightDetail, percentByDaysToDepartureDate, PassengerType.ADULT);
                     if (isExists(flightSearch.getNumberOfChildren()))
-                        calculateFarePerPassenger(flightDetail, percentByDaysToDepartureDate, CHILD);
+                        calculateFarePerPassenger(flightDetail, percentByDaysToDepartureDate, PassengerType.CHILD);
                     if(isExists(flightSearch.getNumberOfInfants())){
                         calculateInfantFare(flightDetail);
                     }

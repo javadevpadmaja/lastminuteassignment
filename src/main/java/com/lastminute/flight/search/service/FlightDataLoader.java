@@ -1,6 +1,6 @@
-package com.lastminute.service;
+package com.lastminute.flight.search.service;
 
-import com.lastminute.domain.Flight;
+import com.lastminute.flight.search.domain.Flight;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

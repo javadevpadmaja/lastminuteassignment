@@ -1,4 +1,4 @@
-package com.lastminute.service;
+package com.lastminute.flight.search.service;
 
 import org.hamcrest.core.IsNot;
 import org.junit.Test;

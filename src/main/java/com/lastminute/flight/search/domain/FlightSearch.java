@@ -1,4 +1,4 @@
-package com.lastminute.domain;
+package com.lastminute.flight.search.domain;
 
 import java.time.LocalDate;
 import java.util.List;

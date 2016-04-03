@@ -1,4 +1,4 @@
-package com.lastminute.domain;
+package com.lastminute.flight.search.domain;
 
 public class Flight {
     private String origin;

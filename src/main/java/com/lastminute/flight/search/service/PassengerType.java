@@ -1,4 +1,4 @@
-package com.lastminute.service;
+package com.lastminute.flight.search.service;
 
 public enum PassengerType {
     ADULT(100),

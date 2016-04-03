@@ -1,4 +1,4 @@
-package com.lastminute.service;
+package com.lastminute.flight.search.service;
 
 public enum InfantPrices {
     IB(10.0),
