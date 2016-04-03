@@ -139,7 +139,6 @@ public class FlightServiceTest {
 
     @Test(expected = InvalidDepartureDateException.class)
     public void shouldThrowExceptionGivenInvalidDepartureDate() throws Exception {
-        //given
         FlightSearch flightSearch = new FlightSearch("AMS", "FRA", now().minusDays(30), 1,0,0);
         flightService.findFlights(flightSearch);
         thrown.expect(InvalidDepartureDateException.class);

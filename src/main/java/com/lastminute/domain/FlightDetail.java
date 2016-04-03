@@ -1,8 +1,6 @@
 package com.lastminute.domain;
 
-import java.io.Serializable;
-
-public class FlightDetail implements Serializable {
+public class FlightDetail {
 
     private Flight flight;
     private Double percentByDaysToDepartureDate;

@@ -1,10 +1,9 @@
 package com.lastminute.domain;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class FlightSearch implements Serializable {
+public class FlightSearch  {
     private String origin;
     private String destination;
     private LocalDate departureDate;

@@ -1,8 +1,6 @@
 package com.lastminute.domain;
 
-import java.io.Serializable;
-
-public class Flight implements Serializable {
+public class Flight {
     private String origin;
     private String destination;
     private String airline;

@@ -7,37 +7,30 @@ import com.lastminute.exceptions.InvalidDepartureDateException;
 import com.lastminute.exceptions.InvalidOriginAndDestinationException;
 import com.lastminute.exceptions.SameOriginAndDestinationException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 
 import static com.lastminute.service.PassengerType.ADULT;
 import static com.lastminute.service.PassengerType.CHILD;
-import static com.lastminute.service.Util.loadFlights;
-import static com.lastminute.service.Util.round;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toList;
 
 public class FlightServiceImpl implements FlightService {
-    private static Map<String, List<Flight>> flightsMap;
 
-    public FlightServiceImpl() {
-        flightsMap = unmodifiableMap(loadFlights("flights.csv"));
-    }
+    private FlightDataLoader flightDataLoader = FlightDataLoader.INSTANCE;
 
     @Override
     public FlightSearch findFlights(FlightSearch flightSearch) {
-        List<Flight> flights = getFlights(flightSearch.getOrigin(), flightSearch.getDestination());
+        checkIfOriginAndDestinationAreSame(flightSearch.getOrigin(), flightSearch.getDestination());
+        checkIfOriginAndDestinationAreValid(flightSearch.getOrigin(), flightSearch.getDestination());
+        List<Flight> flights = flightDataLoader.getFlights(flightSearch.getOrigin(), flightSearch.getDestination());
         flightSearch.setFlightDetails(flights.stream().map(FlightDetail::new).collect(toList()));
         return calculateFares(flightSearch);
     }
 
-    private List<Flight> getFlights(String origin, String destination) {
-        checkIfOriginAndDestinationAreSame(origin, destination);
-        checkIfOriginAndDestinationAreValid(origin, destination);
-        return flightsMap.get(origin.concat(destination));
-    }
+
 
     private void checkIfOriginAndDestinationAreSame(String origin, String destination) {
         if (origin.equals(destination)) {
@@ -46,7 +39,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     private void checkIfOriginAndDestinationAreValid(String origin, String destination) {
-        if (!flightsMap.containsKey(origin.concat(destination))) {
+        if (!flightDataLoader.getFlightsMap().containsKey(origin.concat(destination))) {
             throw new InvalidOriginAndDestinationException("no flights available");
         }
     }
@@ -145,6 +138,10 @@ public class FlightServiceImpl implements FlightService {
         if(isExists(numberOfInfants)) {
             totalPrice += numberOfInfants * flightDetail.getPricePerInfant();
         }
-        flightDetail.setTotalPriceOfAllPassengers(round(totalPrice));
+        flightDetail.setTotalPriceOfAllPassengers(format(totalPrice));
+    }
+
+    protected static double format(double value) {
+        return new BigDecimal(value).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

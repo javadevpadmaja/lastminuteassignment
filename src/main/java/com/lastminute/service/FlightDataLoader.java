@@ -1,12 +1,9 @@
 package com.lastminute.service;
 
 import com.lastminute.domain.Flight;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.*;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +11,22 @@ import java.util.Map;
 
 import static java.lang.ClassLoader.getSystemResourceAsStream;
 import static java.lang.Double.parseDouble;
+import static java.util.Collections.unmodifiableMap;
 
-public class Util {
-    static String LINE_SEPARATOR = ",";
-    private static final Logger logger = LogManager.getLogger(Util.class);
+public enum FlightDataLoader {
+    INSTANCE;
+    private String LINE_SEPARATOR = ",";
+    private  Map<String, List<Flight>> flightsMap;
 
-    public static Map<String, List<Flight>> loadFlights(String fileName) {
+    public  Map<String, List<Flight>> getFlightsMap() {
+        return flightsMap;
+    }
+
+     FlightDataLoader() {
+        flightsMap = unmodifiableMap(loadFlights("flights.csv"));
+    }
+
+    private Map<String, List<Flight>> loadFlights(String fileName)  {
         Map<String, List<Flight>> flightsMap = new HashMap<>();
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getSystemResourceAsStream(fileName)))) {
             bufferedReader.lines()
@@ -38,12 +45,14 @@ public class Util {
                         flightsMap.put(key,flights);
                     });
         } catch (Exception ex){
-            logger.error(ex);
+            throw new IllegalArgumentException("File not available");
         }
         return flightsMap;
     }
 
-    protected static double round(double value) {
-        return new BigDecimal(value).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    public List<Flight> getFlights(String origin, String destination) {
+
+        return flightsMap.get(origin.concat(destination));
     }
+
 }
